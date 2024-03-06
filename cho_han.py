@@ -5,20 +5,38 @@ the player must guess if the sum is even or odd.
 
 from random import randint
 
-def roll_die(d_num: int) -> int:
-    """Roll a d-x sided die"""
-    roll = randint(1, d_num)
-    return roll
+class Wallet:
+    """Keeps track of how much money the player has."""
+    def __init__(self):
+        self.coins = 0
+
+    def update_money(self, coins=0):
+        '''Updates the amount of money in the wallet'''
+        self.coins += coins
+        return self.coins
+    
+    def show_money(self):
+        '''Shows the current amount of money in the wallet'''
+        return self.coins
+
+
+def roll_dice(num_dice: int, num_sides: int,) -> int:
+    """Roll x number of d-y sided dice"""
+    dice_total = 0
+    i = 0
+    for i in range(num_dice):
+        dice_total += randint(1, num_sides)
+    return dice_total
 
 
 def check_odd_even(number: int) -> str:
     """Check if a number is odd or even"""
-    if number//2 == 0:
+    if number % 2 == 0:
         return "cho"
-    if number//2 == 1:
+    if number % 2 == 1:
         return "han"
-    else:
-        raise Exception("Not a valid integer.")
+    #else:
+    #    raise Exception("Not a valid integer.")
 
 
 def get_guess() -> str:
@@ -28,18 +46,31 @@ def get_guess() -> str:
     return guess.lower()
 
 
-def banker(update_money: int) -> int:
-    """Keeps track of how much money the player has."""
-    coins = 0
-    coins += update_money
-    print(f"Total cash: ${coins}")
-
-
-def get_bet() -> int:
+def get_bet(current_money: int) -> int:
     """Ask the player how much money they want to bet."""
-    print('How much do you want to bet? (or QUIT)')
-    bet = int(input("bet > "))
-    return bet
+    print('How much do you want to bet? (or (Q)UIT)')
+    bet = input("bet amount > ")
+    
+    if bet in ("QUIT", "quit", "Q", "q"):
+        return False
+        
+    try:
+        bet = int(bet)
+    except ValueError:
+        print("Invalid amount given")
+        return False
+
+    if bet > current_money:
+        print(f"Insufficient funds, the most you can bet is {current_money}")
+        return get_bet(current_money)
+    elif bet == 0:
+        print("You gotta pay to play. Minimum bet is $1.")
+        return get_bet(current_money)
+    elif bet < 0:
+        print("This is just a reverse bet.")
+        return bet
+    else:
+        return bet
 
 
 def print_rules():
@@ -51,36 +82,36 @@ def print_rules():
     """)
 
 
-def main(num_dice):
+def main(num_dice, die_sides):
     """Main game loop"""
     print_rules()
 
-    starting_cash = 5000
-    banker(starting_cash)
+    print(f"This game will be played with {num_dice} {die_sides}-sided dice.")
+
+    wallet = Wallet()
+    wallet.update_money(5000)
+    print(f"You start with ${wallet.show_money()}")
 
     game_session = True
 
     while game_session:
-        #round_bet = get_bet()
+        round_bet = get_bet(wallet.show_money())
 
-        # if round_bet == "QUIT":
-            # game_session = False
+        if round_bet is False:
+            break
 
-        sum_of_dice = 0
-        for i in range(num_dice):
-            sum_of_dice += roll_die(6)
-            i+= 1
+        total = roll_dice(num_dice, die_sides)
         
-        print(sum_of_dice)
-
-        correct_answer = check_odd_even(sum_of_dice)
+        correct_answer = check_odd_even(total)
         player_answer = get_guess()
 
+        print(total)
         if correct_answer == player_answer:
-            print("win")
-            # banker(round_bet*2)
-        else:
-            # banker(-round_bet)
-            print("lose")
+            wallet.update_money(round_bet)
+            print(f"You win +${round_bet}. You now have ${wallet.show_money()}")
+        elif correct_answer != player_answer:
+            wallet.update_money(-round_bet)
+            print(f"You lose -${round_bet}. You now have ${wallet.show_money()}")
 
-main(2)
+
+main(12, 20)
