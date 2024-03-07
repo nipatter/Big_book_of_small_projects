@@ -33,10 +33,8 @@ def check_odd_even(number: int) -> str:
     """Check if a number is odd or even"""
     if number % 2 == 0:
         return "cho"
-    if number % 2 == 1:
+    elif number % 2 == 1:
         return "han"
-    #else:
-    #    raise Exception("Not a valid integer.")
 
 
 def get_guess() -> str:
@@ -67,8 +65,8 @@ def get_bet(current_money: int) -> int:
         print("You gotta pay to play. Minimum bet is $1.")
         return get_bet(current_money)
     elif bet < 0:
-        print("This is just a reverse bet.")
-        return bet
+        print("You can't bet a negative amount. Minimum bet is $1.")
+        return get_bet(current_money)
     else:
         return bet
 

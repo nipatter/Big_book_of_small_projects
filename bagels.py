@@ -15,7 +15,7 @@ import sys
 def check_guess(guess: int, secret: int) -> list:
     '''Checks for matching numbers at each digit'''
 
-    hints = [] # FIXME: huge issue when repeated digit in guess appears in secret
+    hints = []
     
     for ind, digit in enumerate(guess):
         if guess == secret:
@@ -49,10 +49,8 @@ def main_game(chances: int) ->  None:
     print("Guess the secret 3 digit number (100 - 999)")
     print("Here are what the hints mean: \n* Bagels: nothing right \n* Pico: right digit wrong place \n* Fermi: right digit right place\n")
 
-    #print(secret_num) # TODO remove for final version
-
     for i in range(chances, -1, -1):
-        if i == 0: ## this code doesn't execute because it stops before i == 0
+        if i == 0:
             print("Game Over. You've run out of guesses.")
             print(f"The correct answer was {secret_num}")
             play_again()

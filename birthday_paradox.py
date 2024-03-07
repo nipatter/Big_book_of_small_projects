@@ -11,11 +11,11 @@ from random import randint
 
 def generate_birthdays() -> int:
     '''Generate a birthday, with consideration for leap years every 4 years'''
-    day = randint(1, 366) # TODO: doesn't this change the probability of other birthdays?
-    if day == 60: # 31+29 = 60, leap days are the 60th day in the calendar
-        reroll = randint(1,4) # leap years happen every 4 years
-        if reroll != 4: # pseudo way of making 60 1/4 as common as other numbers
-            generate_birthdays() # is this recursion?? no becuase it doesn't collapse down to a value
+    day = randint(1, 366) 
+    if day == 60:
+        reroll = randint(1,4) 
+        if reroll != 4: 
+            generate_birthdays() 
         else:
             return day
     else:
@@ -28,14 +28,11 @@ def one_simulation(num_people: int) -> bool:
     for i in range(num_people):
         birthday_list.append(generate_birthdays())
 
-    # print(f"Here are {num_people} people's birthdays: {birthday_list}")
-    # this is for debugging only. unless you want to see 10000 birthday lists printed
 
-    # check for any matching pairs
     if len(birthday_list) == len(set(birthday_list)):
-        return False # no matching birthdays
+        return False
     else:
-        return True # some people had matching birthdays
+        return True
 
 
 def main() -> None:
@@ -63,7 +60,6 @@ def main() -> None:
         if one_simulation(group_size) is True:
             match_counter += 1
 
-    # matching birthday probability
     prob = match_counter/num_of_sims * 100
 
     print(f'''Out of {num_of_sims} simulations of {group_size} people, there was a
